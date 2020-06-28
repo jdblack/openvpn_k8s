@@ -13,6 +13,8 @@ secrets and cert-manager emitted secrets.
 
 ## Installation
 
+This is available on docker with `docker pull jdblack/openvpn_k8s`
+
 examples/ includes an example of how I stand this container up in K8s. I have
 set up OpenWRT to port forward connections TCP:1194 to the Load Balancer for
 my openvpn server.
@@ -72,9 +74,9 @@ Contributions are welcome!
 This work was made possible by concepts that were illustrated from the
 following sources:
 
-Jerome Petazzoni: https://github.com/jpetazzo/dockvpn
-Kyle Manna: https://github.com/kylemanna/docker-openvpn
-Chepurko: https://github.com/chepurko/k8s-ovpn
+- Jerome Petazzoni: https://github.com/jpetazzo/dockvpn
+- Kyle Manna: https://github.com/kylemanna/docker-openvpn
+- Chepurko: https://github.com/chepurko/k8s-ovpn
 
 ## Gotchas
 

@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: openvpn
-        image: registry:5000/openvpn
+        image: jdblack/openvpn_k8s
         env:
         - name: ENABLE_NAT
           value: "true"
@@ -47,8 +47,6 @@ spec:
       - name: certs
         secret:
           secretName: server-cert
-      imagePullSecrets:
-        - name: registry-secret
 ---
 apiVersion: v1
 kind: Service
