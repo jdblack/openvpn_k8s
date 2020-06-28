@@ -1,0 +1,67 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: openvpn
+  name: openvpn
+  labels:
+    app: openvpn
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openvpn
+  template:
+    metadata:
+      name: openvpn
+      namespace: openvpn
+      labels:
+        app: openvpn
+    spec:
+      containers:
+      - name: openvpn
+        image: registry:5000/openvpn
+        env:
+        - name: ENABLE_NAT
+          value: "true"
+        - name: DNS_SERVER
+          value: 192.168.1.1
+        - name: LOCAL_NET
+          value: 192.168.1.0
+        - name: LOCAL_MASK
+          value: 255.255.255.0
+        - name: VPN_NET
+          value: 192.168.2.0
+        - name: VPN_MASK
+          value: 255.255.255.0
+        volumeMounts:
+        - name: certs
+          mountPath: "/etc/openvpn/certs"
+        ports:
+          - containerPort: 1194
+        securityContext:
+            capabilities:
+              add:
+                - NET_ADMIN 
+      volumes:
+      - name: certs
+        secret:
+          secretName: server-cert
+      imagePullSecrets:
+        - name: registry-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openvpn
+  namespace: openvpn
+spec:
+  type: LoadBalancer
+  selector:
+    app: openvpn
+  ports:
+    - protocol: TCP
+      port: 1194
+      targetPort: 1194
+
+

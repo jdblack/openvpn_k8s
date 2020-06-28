@@ -1,0 +1,26 @@
+#!/bin/sh -e
+
+mkdir /dev/net
+mknod /dev/net/tun c 10 200
+
+openssl dhparam -out /etc/openvpn/dh.pem 1024
+
+echo "server $VPN_NET $VPN_MASK" >> /etc/openvpn/openvpn.conf
+
+if [ -n "$LOCAL_NET" ]; then
+  echo push \"route $LOCAL_NET $LOCAL_MASK\" >> /etc/openvpn/openvpn.conf
+fi
+
+if [ -n "$DNS_SERVER" ]; then
+  echo push \"dhcp-option DNS $DNS_SERVER\" >> /etc/openvpn/openvpn.conf
+fi
+
+if [ -n "$ENABLE_NAT" ]; then
+  iptables -t nat -A POSTROUTING -s $VPN_NET/$VPN_MASK -o eth0 -j MASQUERADE
+fi
+
+while true; do 
+  openvpn --config /etc/openvpn/openvpn.conf || echo "restarting..."
+  sleep 5
+done
+
